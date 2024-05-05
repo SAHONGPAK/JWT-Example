@@ -22,6 +22,7 @@ import * as directives from 'vuetify/directives'
  * npm install @mdi/font
  * https://vuetifyjs.com/en/features/icon-fonts/#usage
  */
+import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 
