@@ -1,5 +1,10 @@
 <script setup>
     import { ref } from 'vue'
+    import { useRouter } from 'vue-router'
+    import { useUserStore } from '@/stores/user-store'
+
+    const router = useRouter()
+    const userStore = useUserStore()
 
     const userInfo = ref({
         userEmail: '',
@@ -9,7 +14,8 @@
     const passwordVisible = ref(false)
 
     const login = async () => {
-
+        await userStore.login(userInfo.value)
+        router.push("/")
     }
 
 </script>
