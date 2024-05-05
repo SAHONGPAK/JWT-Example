@@ -15,7 +15,10 @@ export const useUserStore = defineStore('userStore', () => {
     const login = async (userInfo) => {
         await axios.post('/auth/login', userInfo, { withCredentials: true })
         .then( (response) => {
-            console.log(response)
+            // console.log(response)
+        })
+        .catch( (error) => {
+            console.log(error.response.data.message)
         })
     }
 
@@ -38,5 +41,12 @@ export const useUserStore = defineStore('userStore', () => {
         .then( (response) => {
 
         })
+    }
+
+    return {
+        login,
+        logout,
+        signUp,
+        withdrawal
     }
 })
