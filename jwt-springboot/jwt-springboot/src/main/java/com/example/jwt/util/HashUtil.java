@@ -1,6 +1,7 @@
 package com.example.jwt.util;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,25 +13,16 @@ public class HashUtil {
 	
 	public String getDigest(String plainText) {
 		
-		StringBuilder sb = new StringBuilder();
+		MessageDigest messageDigest = null;
 		
 		try {
-			
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
-			
+			messageDigest = MessageDigest.getInstance("SHA-512");
+			messageDigest.reset();
 			messageDigest.update(plainText.getBytes("UTF-8"));
-			
-			byte[] byteDigest = messageDigest.digest();
-			
-			
-			for(int index = 0; index < byteDigest.length; index++) {
-				sb.append(Integer.toString((byteDigest[index] & 0xFF) + 0x100, 16).substring(1));
-			}
-			
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-			return null;
+		}catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 		
-		return sb.toString();
+		return String.format("%0128x", new BigInteger(1, messageDigest.digest()));
 	}
 }
