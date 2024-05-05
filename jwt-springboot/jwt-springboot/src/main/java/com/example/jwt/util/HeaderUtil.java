@@ -1,5 +1,7 @@
 package com.example.jwt.util;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class HeaderUtil {
 	
 	private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -16,6 +18,17 @@ public class HeaderUtil {
 
 	public static String getRefreshCookieName() {
 		return REFRESH_COOKIE;
+	}
+
+	public static String getAccessToken(HttpServletRequest httpServletRequest) {
+		
+		String authorization = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+		
+		if(authorization != null & authorization.startsWith(TOKEN_PREFIX)) {
+			return authorization.substring(TOKEN_PREFIX.length());
+		}
+		
+		return null;
 	}
 
 }

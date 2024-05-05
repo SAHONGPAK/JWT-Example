@@ -50,4 +50,15 @@ public class AuthServiceImpl implements AuthService {
 		
 		return authDto;
 	}
+
+	@Override
+	public void logout(String accessToken) {
+		
+		// 1. 토큰으로부터 사용자의 이메일을 추출.
+		String userEmail = jwtUtil.getUserEmail(accessToken, "AccessToken");
+		
+		// 2. 해당 사용자의 활성화된 토큰을 모두 비활성화 처리.
+		authRepository.setInvalid(userEmail);
+		
+	}
 }

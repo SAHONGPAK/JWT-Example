@@ -6,4 +6,6 @@ import com.example.jwt.exception.NotFoundUserException;
 
 public interface AuthService {
 	AuthDto login(RequestLoginDto requestLoginDto) throws NotFoundUserException;
+
+	void logout(String accessToken);
 }

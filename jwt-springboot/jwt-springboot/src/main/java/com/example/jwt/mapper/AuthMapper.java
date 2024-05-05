@@ -3,6 +3,7 @@ package com.example.jwt.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.jwt.dto.RequestLoginDto;
 import com.example.jwt.dto.TokenDto;
@@ -16,6 +17,9 @@ public interface AuthMapper {
 
 	@Insert("INSERT INTO token_status VALUES(#{userEmail}, #{hashedToken}, #{dateExpiration}, true)")
 	int insertTokenDto(TokenDto tokenDto);
+
+	@Update("UPDATE token_status SET valid=false WHERE user_email=#{userEmail} AND valid=true")
+	void updateValidTokenToInvalidByUserEmail(String userEmail);
 
 	
 }

@@ -13,6 +13,8 @@ import com.example.jwt.dto.RequestLoginDto;
 import com.example.jwt.service.AuthService;
 import com.example.jwt.util.HeaderUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
  * 
  * Controller는 데이터를 전달받고, Service에 넘겨주고,
@@ -57,5 +59,18 @@ public class AuthController {
 		return ResponseEntity.ok()
 				.headers(httpHeaders).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
 				.build();
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletRequest httpServletRequest) {
+		
+		// 1. HTTP Header의 Authorization (AccessToken)을 추출.
+		String accessToken = HeaderUtil.getAccessToken(httpServletRequest);
+
+		// 2. logout 진행.
+		authService.logout(accessToken);
+		
+		
+		return ResponseEntity.ok().build();
 	}
 }

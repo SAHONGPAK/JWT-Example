@@ -30,4 +30,9 @@ public class AuthRepositoryImpl implements AuthRepository {
 		return authMapper.insertTokenDto(tokenDto);
 	}
 
+	@Override
+	public void setInvalid(String userEmail) {
+		authMapper.updateValidTokenToInvalidByUserEmail(userEmail);
+	}
+
 }

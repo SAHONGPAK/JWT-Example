@@ -10,8 +10,13 @@ import org.springframework.stereotype.Component;
 import com.example.jwt.dto.TokenDto;
 import com.example.jwt.entity.UserEntity;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 /**
  * 토큰 발급 및 검증을 위한 클래스.
@@ -83,5 +88,36 @@ public class JwtUtil {
 		
 		return tokenDto;
 	}
+
+	public String getUserEmail(String token, String type) {
+		if(isValidToken(token, type)) {
+			Claims payload = Jwts.parser()
+					.verifyWith(getSecretKey(type))
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
+			
+			return payload.get("userEmail", String.class);
+		}
+		
+		return null;
+	}
+
+	private boolean isValidToken(String token, String type) {
+		Jws<Claims> payload = null;
+		
+		try {
+			payload = Jwts.parser()
+					.verifyWith(getSecretKey(type))
+					.build()
+					.parseSignedClaims(token);
+		} catch(ExpiredJwtException | SignatureException | MalformedJwtException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 
 }

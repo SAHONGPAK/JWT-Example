@@ -10,4 +10,6 @@ public interface AuthRepository {
 
 	int saveToken(TokenDto accessToken);
 
+	void setInvalid(String userEmail);
+
 }
