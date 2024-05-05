@@ -22,6 +22,7 @@
     <v-app-bar-title
         text="JWT Example"
         class="v-col-3"
+        @click="$router.push({name: 'main'})"
     />
 
     <v-list class="v-col-8">
