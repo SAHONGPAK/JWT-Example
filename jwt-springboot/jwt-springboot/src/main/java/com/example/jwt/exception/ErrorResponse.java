@@ -4,7 +4,7 @@ public class ErrorResponse {
 	
 	private int httpStatus;
 	private String message;
-	private StringBuilder sb;
+	private StringBuilder sb = new StringBuilder();
 
 	
 	public ErrorResponse(ErrorCode errorCode) {
@@ -30,5 +30,14 @@ public class ErrorResponse {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public String toString() {
+		sb.append("{").append("\n")
+			.append("\"httpStatus\": ").append(this.httpStatus).append("\n")
+			.append("\"message\": ").append("\"").append(this.message).append("\"").append("\n")
+			.append("}");
+		
+		return sb.toString();
 	}
 }
