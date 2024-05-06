@@ -12,8 +12,9 @@ public class CORSConfig implements WebMvcConfigurer {
 		registry
 			.addMapping("/**") // 허용하려는 API 요청 경로
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-			.allowedOrigins("http://localhost:5173")
+			.allowedOrigins("http://localhost:5173/")
 			.allowCredentials(true)
+			.exposedHeaders("Access-Control-Allow-Headers")
 			.exposedHeaders("Authorization")
 			.maxAge(3600);
 		
