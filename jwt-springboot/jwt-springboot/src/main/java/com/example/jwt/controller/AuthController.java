@@ -1,8 +1,10 @@
 package com.example.jwt.controller;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,7 @@ import com.example.jwt.dto.TokenDto;
 import com.example.jwt.service.AuthService;
 import com.example.jwt.util.HeaderUtil;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -54,7 +57,7 @@ public class AuthController {
 				.path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
 				.httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
 				.secure(true) // Set-Cookie 설정.
-				.maxAge(authDto.getMaxAge()) // RefreshToken과 동일한 만료 시간으로 설정.
+				.maxAge(authDto.getMaxAge() / 1000) // RefreshToken과 동일한 만료 시간으로 설정.
 				.sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
 				.build();
 
@@ -63,7 +66,7 @@ public class AuthController {
 				.build();
 	}
 	
-	@PostMapping("/logout")
+	@DeleteMapping("/logout")
 	public ResponseEntity<?> logout(HttpServletRequest httpServletRequest) {
 		
 		// 1. HTTP Header의 Authorization (AccessToken)을 추출.
@@ -72,8 +75,20 @@ public class AuthController {
 		// 2. logout 진행.
 		authService.logout(accessToken);
 		
-		
-		return ResponseEntity.ok().build();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		ResponseCookie responseCookie = ResponseCookie
+				.from(HeaderUtil.getRefreshCookieName(), "")
+				.domain("localhost") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
+				.path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
+				.httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
+				.secure(true) // Set-Cookie 설정.
+				.maxAge(0) // RefreshToken과 동일한 만료 시간으로 설정.
+				.sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
+				.build();
+
+		return ResponseEntity.noContent()
+				.headers(httpHeaders).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+				.build();
 	}
 	
 	@GetMapping("/refresh")

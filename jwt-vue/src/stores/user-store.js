@@ -15,9 +15,7 @@ export const useUserStore = defineStore('userStore', () => {
     const login = async (userInfo) => {
         await axios.post('/auth/login', userInfo, { withCredentials: true })
         .then( (response) => {
-            
             axios.defaults.headers.common['Authorization'] = response.headers.authorization
-
         })
         .catch( (error) => {
             console.log(error)
@@ -25,9 +23,9 @@ export const useUserStore = defineStore('userStore', () => {
     }
 
     const logout = async () => {
-        await axios.post("/auth/logout")
+        await axios.delete("/auth/logout", { withCredentials : true })
         .then( (response) => {
-
+            axios.defaults.headers.common['Authorization'] = ''
         })
     }
 

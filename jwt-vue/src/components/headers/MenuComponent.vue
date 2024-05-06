@@ -1,6 +1,10 @@
 <script setup>
     import { ref } from 'vue'
-    import { RouterLink } from 'vue-router'
+    import { RouterLink, useRouter } from 'vue-router'
+    import { useUserStore } from '@/stores/user-store'
+
+    const router = useRouter()
+    const userStore = useUserStore()
 
     const menuList = ref([
         {name: "로그인", routeName: "login"},
@@ -11,7 +15,8 @@
     ])
 
     const logout = async () => {
-
+        await userStore.logout()
+        //router.push('/')
     }
 
 </script>

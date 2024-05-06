@@ -9,7 +9,6 @@ export const instance = axios.create({
 
 
 // Request 발생 시 적용할 기본 속성 설정.
-instance.defaults.headers.common['Authorization'] = ''
 instance.defaults.headers.post['Content-Type'] = 'application/json'
 instance.defaults.headers.put['Content-Type'] = 'application/json'
 
@@ -28,7 +27,6 @@ instance.interceptors.response.use( (response) => {
 }, async (error) => {
 
     // 에러가 발생했던 요청과 그 응답 객체를 저장.
-    console.log(error)
     const { config, response } = error
 
     // 응답으로 Unauthorized가 발생한 경우.
