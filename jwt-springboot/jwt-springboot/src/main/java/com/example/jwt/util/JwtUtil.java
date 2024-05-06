@@ -103,7 +103,7 @@ public class JwtUtil {
 		return null;
 	}
 
-	private boolean isValidToken(String token, String type) {
+	public boolean isValidToken(String token, String type) {
 		Jws<Claims> payload = null;
 		
 		try {
@@ -118,6 +118,4 @@ public class JwtUtil {
 		return true;
 	}
 	
-	
-
 }
