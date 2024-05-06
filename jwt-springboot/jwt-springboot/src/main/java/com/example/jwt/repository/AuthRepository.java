@@ -12,4 +12,7 @@ public interface AuthRepository {
 
 	void setInvalid(String userEmail);
 
+	UserEntity getUser(String userEmail);
+
+	void setInvalid(String userEmail, String refreshToken);
 }

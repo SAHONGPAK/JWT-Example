@@ -61,4 +61,19 @@ public class AuthServiceImpl implements AuthService {
 		authRepository.setInvalid(userEmail);
 		
 	}
+
+	@Override
+	public TokenDto reGenerateToken(String refreshToken) {
+		
+		String userEmail = jwtUtil.getUserEmail(refreshToken, "RefreshToken");
+		
+		authRepository.setInvalid(userEmail, hashUtil.getDigest(refreshToken));
+		
+		UserEntity userEntity = authRepository.getUser(userEmail);
+		TokenDto tokenDto = jwtUtil.generateToken(userEntity, "AccessToken");
+		
+		authRepository.saveToken(tokenDto);
+		
+		return tokenDto;
+	}
 }

@@ -21,5 +21,9 @@ public interface AuthMapper {
 	@Update("UPDATE token_status SET valid=false WHERE user_email=#{userEmail} AND valid=true")
 	void updateValidTokenToInvalidByUserEmail(String userEmail);
 
-	
+	@Select("SELECT * from user WHERE email=#{userEmail}")
+	UserEntity selectByUserEmail(String userEmail);
+
+	@Update("UPDATE token_status SET valid=false WHERE user_email=#{userEmail} AND valid=ture AND hashed_token!=#{hahsedRefreshToken}")
+	void updateValidTokenToInvalidByUserEmailAndRefreshToken(String userEmail, String hashedRefreshToken);
 }

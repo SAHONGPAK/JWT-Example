@@ -3,6 +3,7 @@ package com.example.jwt.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jwt.dto.AuthDto;
 import com.example.jwt.dto.RequestLoginDto;
+import com.example.jwt.dto.TokenDto;
 import com.example.jwt.service.AuthService;
 import com.example.jwt.util.HeaderUtil;
 
@@ -72,5 +74,20 @@ public class AuthController {
 		
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/refresh")
+	public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
+		
+		String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
+		
+		TokenDto tokenDto = authService.reGenerateToken(refreshToken);
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(HeaderUtil.getAuthorizationHeaderName(), HeaderUtil.getTokenPrefix() + tokenDto.getToken());
+		
+		return ResponseEntity.ok()
+				.headers(httpHeaders)
+				.build();
 	}
 }

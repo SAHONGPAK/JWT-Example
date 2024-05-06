@@ -22,6 +22,7 @@ public class AuthRepositoryImpl implements AuthRepository {
 	@Override
 	public UserEntity getUser(RequestLoginDto requestLoginDto) {
 		requestLoginDto.setUserPassword(hashUtil.getDigest(requestLoginDto.getUserPassword()));
+		System.out.println(requestLoginDto.getUserPassword());
 		return authMapper.selectByRequestLoginDto(requestLoginDto);
 	}
 
@@ -33,6 +34,16 @@ public class AuthRepositoryImpl implements AuthRepository {
 	@Override
 	public void setInvalid(String userEmail) {
 		authMapper.updateValidTokenToInvalidByUserEmail(userEmail);
+	}
+
+	@Override
+	public UserEntity getUser(String userEmail) {
+		return authMapper.selectByUserEmail(userEmail);
+	}
+
+	@Override
+	public void setInvalid(String userEmail, String hashedRefreshToken) {
+		authMapper.updateValidTokenToInvalidByUserEmailAndRefreshToken(userEmail, hashedRefreshToken);
 	}
 
 }
