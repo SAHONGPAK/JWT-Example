@@ -25,7 +25,7 @@ public class HeaderUtil {
 		
 		String authorization = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 		
-		if(authorization != null & authorization.startsWith(TOKEN_PREFIX)) {
+		if(authorization != null && authorization.startsWith(TOKEN_PREFIX)) {
 			return authorization.substring(TOKEN_PREFIX.length());
 		}
 		
