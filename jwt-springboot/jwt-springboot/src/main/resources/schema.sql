@@ -28,7 +28,7 @@ VALUE (
 INSERT INTO `user`
 VALUE (
 	"admin@admin.com",
-    "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec", # admin
+    "", # admin
     "관리자1",
     "관리자"
 );
@@ -37,7 +37,8 @@ CREATE TABLE `token_status` (
 	`user_email` VARCHAR(100),
     `hashed_token` CHAR(128), # SHA 512
     `expiration` TIMESTAMP,
-    `valid` bOOLEAN
+    `valid` bOOLEAN,
+	CONSTRAINT token_pk PRIMARY KEY(`user_email`, `hashed_token`)
 );
 
 
