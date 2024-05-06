@@ -44,7 +44,7 @@
             prepend-inner-icon="mdi-lock-outline"
             variant="outlined"
             @click:append-inner="passwordVisible = !passwordVisible"
-            v-model="userInfo.password"
+            v-model="userInfo.userPassword"
         />
 
         <v-btn
