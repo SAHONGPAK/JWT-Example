@@ -1,5 +1,15 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, inject } from 'vue'
+
+    const axios = inject('axios')
+
+    axios.get('/user/myPage')
+    .then( (response) => {
+        const userResponse = response.data
+        userInfo.value.userEmail = userResponse.userEmail
+        userInfo.value.userName = userResponse.userName
+    })
+
 
     const userInfo =  ref({
         userEmail: '',
@@ -27,7 +37,7 @@
         rounded="lg"
     >
 
-        <div class="text-subtitle-1 text-medium-emphasis">계정</div>
+        <div class="text-subtitle-1 text-medium-emphasis">이메일</div>
 
         <v-text-field
             density="compact"
