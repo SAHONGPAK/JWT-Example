@@ -20,7 +20,7 @@ export const useUserStore = defineStore('userStore', () => {
 
         })
         .catch( (error) => {
-            console.log(error.response.data.message)
+            console.log(error)
         })
     }
 
