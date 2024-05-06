@@ -76,4 +76,9 @@ public class AuthServiceImpl implements AuthService {
 		
 		return tokenDto;
 	}
+
+	@Override
+	public boolean isValidToken(String token) {
+		return authRepository.getValidStatusToken(token);
+	}
 }

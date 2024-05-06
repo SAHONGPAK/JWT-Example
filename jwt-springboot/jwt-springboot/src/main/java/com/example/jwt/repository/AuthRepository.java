@@ -15,4 +15,6 @@ public interface AuthRepository {
 	UserEntity getUser(String userEmail);
 
 	void setInvalid(String userEmail, String refreshToken);
+
+	boolean getValidStatusToken(String token);
 }

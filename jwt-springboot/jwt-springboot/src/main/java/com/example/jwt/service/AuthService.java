@@ -11,4 +11,6 @@ public interface AuthService {
 	void logout(String accessToken);
 
 	TokenDto reGenerateToken(String refreshToken);
+
+	boolean isValidToken(String token);
 }
