@@ -15,7 +15,9 @@ export const useUserStore = defineStore('userStore', () => {
     const login = async (userInfo) => {
         await axios.post('/auth/login', userInfo, { withCredentials: true })
         .then( (response) => {
-            // console.log(response)
+            
+            axios.defaults.headers.common['Authorization'] = response.headers.authorization
+
         })
         .catch( (error) => {
             console.log(error.response.data.message)
