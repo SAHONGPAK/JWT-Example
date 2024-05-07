@@ -29,13 +29,6 @@ export const useUserStore = defineStore('userStore', () => {
         })
     }
 
-    const signUp = async () => {
-       await axios.post("/user/signUp")
-       .then( (response) => {
-
-       }) 
-    }
-
     const withdrawal = async () => {
         await axios.delete('/user/withdrawal')
         .then( (response) => {
@@ -46,7 +39,6 @@ export const useUserStore = defineStore('userStore', () => {
     return {
         login,
         logout,
-        signUp,
         withdrawal
     }
 })

@@ -1,15 +1,44 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, inject, computed } from 'vue'
+    
+    const axios = inject('axios')
 
     const userInfo = ref({
+        userEmail: '',
+        userName: '',
+        userPassword: '',
+        retryUserPassword: ''
+    })
 
+    const checkEmailMessage = ref('')
+    const checkEmailMessageColor = ref('')
+
+    const checkUserEmail = async () => {
+        await axios.get(`/user/checkEmail/${userInfo.value.userEmail}`)
+        .then( (response) => {
+            checkEmailMessage.value = '사용할 수 있는 이메일 입니다.'
+            checkEmailMessageColor.value = 'text-green'
+        })
+        .catch( (error) => {
+            checkEmailMessage.value = '사용할 수 없는 이메일 입니다.'
+            checkEmailMessageColor.value = 'text-red'
+        })
+    }
+
+    const isSamePassword = computed( () => {
+        if(userInfo.value.userPassword != userInfo.value.retryUserPassword) {
+            return false;
+        }
     })
 
     const passwordVisible = ref(false)
     const passwordCheckVisible = ref(false)
 
     const signUp = async () => {
-
+        await axios.post('/user/signUp', userInfo.value)
+        .then( (response) => {
+            console.log(response)
+        })
     }
 
 </script>
@@ -29,7 +58,11 @@
             prepend-inner-icon="mdi-email-outline"
             variant="outlined"
             v-model="userInfo.userEmail"
+            @keyup="checkUserEmail"
         />
+        <template v-if="checkEmailMessage !== ''">
+            <span :class="checkEmailMessageColor">{{ checkEmailMessage }}</span>
+        </template>
 
 
         <div class="text-subtitle-1 text-medium-emphasis">이름</div>
@@ -70,7 +103,12 @@
             prepend-inner-icon="mdi-lock-outline"
             variant="outlined"
             @click:append-inner="passwordCheckVisible = !passwordCheckVisible"
+            v-model="userInfo.retryUserPassword"
         />
+
+        <template v-if="isSamePassword === false">
+            <span class="text-red">비밀번호가 일치하지 않습니다.</span>
+        </template>
 
         <v-btn
             block

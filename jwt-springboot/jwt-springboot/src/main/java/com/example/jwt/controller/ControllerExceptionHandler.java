@@ -1,5 +1,7 @@
 package com.example.jwt.controller;
 
+import java.util.InputMismatchException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.jwt.exception.ErrorCode;
 import com.example.jwt.exception.ErrorResponse;
+import com.example.jwt.exception.InvalidEmailException;
+import com.example.jwt.exception.MismatchPasswordException;
 import com.example.jwt.exception.NotFoundUserException;
 
 /**
@@ -26,4 +30,21 @@ public class ControllerExceptionHandler {
 		return ResponseEntity.badRequest().body(errorResponse);
 	}
 	
+	
+	@ExceptionHandler(value = {InvalidEmailException.class})
+	public ResponseEntity<?> invalidEmailHandler(NullPointerException e) {
+		
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_EMAIL);
+		
+		return ResponseEntity.badRequest().body(errorResponse);
+	}
+	
+	@ExceptionHandler(value = {MismatchPasswordException.class})
+	public ResponseEntity<?> mismatchPasswordHandler(InputMismatchException e) {
+		
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_REQUEST);
+		
+		return ResponseEntity.badRequest().body(errorResponse);
+		
+	}
 }
