@@ -21,6 +21,7 @@ public class AuthRepositoryImpl implements AuthRepository {
 	
 	@Override
 	public UserEntity getUser(RequestLoginDto requestLoginDto) {
+		// 클라이언트에서 전달받은 사용자 비밀번호를 SHA-512 해시 처리.
 		requestLoginDto.setUserPassword(hashUtil.getDigest(requestLoginDto.getUserPassword()));
 		return authMapper.selectByRequestLoginDto(requestLoginDto);
 	}
