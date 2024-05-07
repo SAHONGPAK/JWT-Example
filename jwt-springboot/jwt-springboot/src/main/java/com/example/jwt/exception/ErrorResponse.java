@@ -32,6 +32,9 @@ public class ErrorResponse {
 		this.message = message;
 	}
 	
+	/**
+	 * JwtFilter에서 응답하기위한 포맷 설정.
+	 */
 	public String toString() {
 		sb.append("{").append("\n")
 			.append("\"httpStatus\": ").append(this.httpStatus).append("\n")
