@@ -8,6 +8,9 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Component;
 
 
+/**
+ * 평문을 SHA-512로 처리하는 클래스.
+ */
 @Component
 public class HashUtil {
 	
