@@ -75,6 +75,7 @@ public class AuthController {
 		// 2. logout 진행.
 		authService.logout(accessToken);
 		
+		// 3. RefreshToken 삭제.
 		HttpHeaders httpHeaders = new HttpHeaders();
 		ResponseCookie responseCookie = ResponseCookie
 				.from(HeaderUtil.getRefreshCookieName(), "")
@@ -82,7 +83,7 @@ public class AuthController {
 				.path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
 				.httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
 				.secure(true) // Set-Cookie 설정.
-				.maxAge(0) // RefreshToken과 동일한 만료 시간으로 설정.
+				.maxAge(0) // RefreshToken을 삭제하기 위해 시간을 0으로 설정.
 				.sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
 				.build();
 
@@ -94,13 +95,18 @@ public class AuthController {
 	@GetMapping("/refresh")
 	public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
 		
+		// Client에서 withCredentials 옵션으로 설정하여 전송된 경우,
+		// RefreshToken을 받을 수 있다.
 		String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
 		
-		TokenDto tokenDto = authService.reGenerateToken(refreshToken);
+		// RefreshToken을 바탕으로 새로운 AccessToken을 발급.
+		TokenDto newAccessToken = authService.reGenerateToken(refreshToken);
 		
+		// 새로운 Accesstoken을 Header에 추가.
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(HeaderUtil.getAuthorizationHeaderName(), HeaderUtil.getTokenPrefix() + tokenDto.getToken());
+		httpHeaders.add(HeaderUtil.getAuthorizationHeaderName(), HeaderUtil.getTokenPrefix() + newAccessToken.getToken());
 		
+		// 새로운 AccessToken을 전송.
 		return ResponseEntity.ok()
 				.headers(httpHeaders)
 				.build();
