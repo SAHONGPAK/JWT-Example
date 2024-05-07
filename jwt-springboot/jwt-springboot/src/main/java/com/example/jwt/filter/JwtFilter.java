@@ -31,11 +31,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest httpServletRequest) throws ServletException {
+		
+		// 필터를 거치치 않을 URI 설정.
 		String[] excludeURIList = {
 				"/auth/login", "/auth/signUp", "/auth/logout",
 				"swagger-ui", "api-docs"
 		};
 		
+		// 필터를 거치치 않을 URI와 일치하는 경우 True(필터를 거치지 않음) / False(필터를 거침)
 		for(String excludeURI : excludeURIList) {
 			if(httpServletRequest.getRequestURI().contains(excludeURI)) {
 				return true;
@@ -49,6 +52,10 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
 			throws ServletException, IOException {
 
+		// Preflight 설정.
+		// OPTIONS 요청이 발생하는 경우.
+		// 아래 Header를 설정하여 전송해주어야 한다.
+		// 반드시 응답으로 200 OK가 전송되어야 한다.
 		if(httpServletRequest.getMethod().equals("OPTIONS")) {
 			httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
 			httpServletResponse.setHeader("Access-Control-Allow-Headers", "content-type, authorization");
@@ -59,13 +66,14 @@ public class JwtFilter extends OncePerRequestFilter {
 		}
 		
 		
-		
+		// Refresh 요청이 발생한 경우.
 		if(httpServletRequest.getRequestURI().contains("/auth/refresh")) {
 			
 			String refreshToken = HeaderUtil.getRefreshToken(httpServletRequest);
 			
 			if(refreshToken != null) {
 				
+				// 토큰이 비정상이거나, 비활성 토큰인 경우는 새로운 토큰을 발급해줄 수 없다.
 				if(!jwtUtil.isValidToken(refreshToken, "RefreshToken") || !authService.isValidToken(refreshToken)) {
 					
 					httpServletResponse.setStatus(ErrorCode.REFRESH_TOKEN_EXPIRED.getHttpStatus());
@@ -80,10 +88,12 @@ public class JwtFilter extends OncePerRequestFilter {
 			}
 			
 		}
+		// 다른 요청이 발생한 경우.
 		else {
 			
 			String accessToken = HeaderUtil.getAccessToken(httpServletRequest);
 			
+			// AccessToken이 없거나, 비정상 토큰이거나, 비활성 토큰인 경우 접근 불가 처리.
 			if(accessToken == null || !jwtUtil.isValidToken(accessToken, "AccessToken") || !authService.isValidToken(accessToken)) {
 				httpServletResponse.setStatus(ErrorCode.REFRESH_TOKEN_EXPIRED.getHttpStatus());
 				httpServletResponse.setContentType("application/json;charset=UTF-8");
@@ -97,7 +107,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			}
 		}
 		
-		
+		// 위 조건을 제외한 모든 요청은 그대로 진행.
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
 }
