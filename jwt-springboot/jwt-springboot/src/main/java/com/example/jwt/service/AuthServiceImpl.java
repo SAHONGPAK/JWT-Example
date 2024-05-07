@@ -65,16 +65,20 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public TokenDto reGenerateToken(String refreshToken) {
 		
+		// 1. RefreshToken으로부터 사용자 Email 추출.
 		String userEmail = jwtUtil.getUserEmail(refreshToken, "RefreshToken");
 		
+		// 2. RefreshToken을 제외한 기존 발급 토큰을 모두 비활성화 처리.
 		authRepository.setInvalid(userEmail, hashUtil.getDigest(refreshToken));
 		
+		// 3. 해당 사용자가 존재하는지 재확인 후, 새로운 AccessToken을 발급.
 		UserEntity userEntity = authRepository.getUser(userEmail);
-		TokenDto tokenDto = jwtUtil.generateToken(userEntity, "AccessToken");
+		TokenDto newAccessToken = jwtUtil.generateToken(userEntity, "AccessToken");
 		
-		authRepository.saveToken(tokenDto);
+		// 4. 새로 발급받은 AccessToken을 저장.
+		authRepository.saveToken(newAccessToken);
 		
-		return tokenDto;
+		return newAccessToken;
 	}
 
 	@Override
