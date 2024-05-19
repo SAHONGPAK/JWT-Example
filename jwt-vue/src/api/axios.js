@@ -13,8 +13,8 @@ instance.defaults.headers.post['Content-Type'] = 'application/json'
 instance.defaults.headers.put['Content-Type'] = 'application/json'
 
 
-instance.interceptors.request.use( (request) => {
-    return request
+instance.interceptors.request.use( (config) => {
+    return config
 }, (error) => {
     return Promise.reject(error)
 })
